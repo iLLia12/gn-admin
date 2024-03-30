@@ -1,0 +1,19 @@
+:root {
+  --header-height: 70px;
+}
+
+body {
+  height: 100vh;
+}
+
+#__nuxt {
+  height: 100vh;
+}
+
+.header {
+  height: var(--header-height);
+}
+
+.main {
+  height: calc(100vh - var(--header-height));
+}
