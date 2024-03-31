@@ -49,7 +49,6 @@ function prepareFormData() {
   formData.append("slug", slug.value);
   formData.append("year", year.value);
   formData.append("description", description.value);
-  console.log('formData.has("images"): ', formData.has("images[]"));
   return formData;
 }
 function handleUploaderChange(f: File[]) {
@@ -57,14 +56,13 @@ function handleUploaderChange(f: File[]) {
 }
 async function handleSubmit() {
   const body = prepareFormData();
-  const { body: responseBody } = await $fetch("http://localhost/api/games", {
+  const res = await $fetch("http://localhost/api/games", {
     headers: {
       Accept: "application/json",
     },
     method: "post",
     body,
   });
-  const { data } = responseBody;
-  console.log(data);
+  console.log(res);
 }
 </script>

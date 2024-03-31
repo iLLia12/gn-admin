@@ -35,15 +35,15 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: "text"
+    default: "text",
   },
   multiple: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-function handleInputUpdate(e) {
-  emit("update:modelValue", e.target.value);
+function handleInputUpdate(e: Event) {
+  emit("update:modelValue", (e.target as HTMLInputElement).value);
 }
 </script>

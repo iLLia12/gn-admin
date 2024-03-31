@@ -2,7 +2,7 @@
   <label
     for="description"
     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-    >Description</label
+    >{{ label }}</label
   >
   <textarea
     id="description"
@@ -17,12 +17,15 @@
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
-    label: String,
     type: String,
+  },
+  label: {
+    type: String,
+    default: "",
   },
 });
 
-function handleInputUpdate(e) {
-  emit("update:modelValue", e.target.value);
+function handleInputUpdate(e: any) {
+  emit("update:modelValue", (e.target as HTMLInputElement).value);
 }
 </script>

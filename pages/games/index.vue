@@ -81,6 +81,7 @@
                     class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium"
                   >
                     <button
+                      @click="() => handleDelete(game.id)"
                       type="button"
                       class="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent text-blue-600 hover:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                     >
@@ -98,12 +99,9 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from "vue-router";
-const route = useRoute();
+import { useRouter } from "vue-router";
 const router = useRouter();
-const { data, pending, error, status } = await useFetch("/api/games");
-
-console.log("data: ", data.value.body.data);
+const { data, pending, error, refresh, status } = await useFetch("/api/games");
 
 const thead = [
   {
@@ -129,28 +127,18 @@ const thead = [
   },
 ];
 
-const games = [
-  {
-    name: "Brown",
-    slug: "brown",
-    year: "2000",
-    description: "descripti ndescriptionde scription descriptiondescription",
-    created_at: "02-09-2002",
-    updated_at: "02-09-2002",
-    deleted_at: "---",
-  },
-  {
-    name: "Brown1",
-    slug: "brown-1",
-    year: "2000",
-    description: "descripti ndescriptionde scription descriptiondescription",
-    created_at: "02-09-2002",
-    updated_at: "02-09-2002",
-    deleted_at: "---",
-  },
-];
+const games = computed(() => {
+  return data.value?.body.data || [];
+});
 
 function handleCreateGame() {
   router.push({ name: "games-create" });
+}
+async function handleDelete(id: number) {
+  const { data } = await useFetch(`/api/games/${id}`, {
+    method: "delete",
+  });
+  await refresh();
+  console.log("data: ", data);
 }
 </script>
