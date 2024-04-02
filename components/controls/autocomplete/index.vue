@@ -14,11 +14,12 @@
     :disabled="disabled"
     :value="modelValue"
     @input="handleInputUpdate"
+    @keyup="handleKeyUp"
   />
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "keyup:enter"]);
 
 const props = defineProps({
   modelValue: {
@@ -49,5 +50,10 @@ const props = defineProps({
 
 function handleInputUpdate(e: Event) {
   emit("update:modelValue", (e.target as HTMLInputElement).value);
+}
+function handleKeyUp(e: KeyboardEvent) {
+  if (e.key == "Enter") {
+    emit("keyup:enter");
+  }
 }
 </script>

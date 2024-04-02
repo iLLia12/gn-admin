@@ -27,5 +27,9 @@ const sideMenu = [
     name: "Tags",
     routeName: "tags",
   },
+  {
+    name: "Filters",
+    routeName: "filters",
+  },
 ];
 </script>

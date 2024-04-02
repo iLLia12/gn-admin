@@ -16,6 +16,25 @@
       <div class="mb-6">
         <Uploader label="Picture" @change="handleUploaderChange" />
       </div>
+      <div class="mb-6">
+        <Autocomplete
+          label="Filters"
+          @keyup:enter="handleFilterAutocompleteEnterKeyup"
+          @update:modelValue="handleFilterSearchTextChange"
+        />
+      </div>
+      <div class="mb-6">
+        <Autocomplete
+          label="Tags"
+          @keyup:enter="handleTagAutocompleteEnterKeyup"
+          @update:modelValue="handleTagSearchTextChange"
+        />
+      </div>
+      <div class="mb-6">
+        <Badge :title="`new tag`" @delete="handleDeleteTag" />
+        <Badge :title="`new tag`" @delete="handleDeleteTag" />
+        <Badge :title="`new tag`" @delete="handleDeleteTag" />
+      </div>
       <div>
         <Button @click="handleSubmit" />
       </div>
@@ -27,16 +46,22 @@
 import { ref, computed } from "vue";
 import useHelpers from "@/composables/useHelpers";
 import Input from "@/components/controls/input";
+import Autocomplete from "@/components/controls/autocomplete";
 import TextArea from "@/components/controls/textarea";
 import Button from "@/components/controls/button";
 import Uploader from "@/components/controls/uploader";
+import Badge from "@/components/controls/badge";
 
 const { toKebabCase } = useHelpers();
+const { data: filters } = await useFetch("/api/filters");
+
+console.log("filters: ", filters.value);
 
 const name = ref("");
 const year = ref("");
 const description = ref("");
 const files = ref<File[]>([]);
+const tags = ref<unknown[]>([]);
 
 const slug = computed(() => toKebabCase(name.value));
 
@@ -53,6 +78,21 @@ function prepareFormData() {
 }
 function handleUploaderChange(f: File[]) {
   files.value = f;
+}
+function handleTagSearchTextChange() {
+  console.log("handleTagSearchTextChange");
+}
+function handleDeleteTag() {
+  console.log("handleDeleteTag");
+}
+function handleTagAutocompleteEnterKeyup() {
+  console.log("handleTagAutocompleteEnterKeyup");
+}
+function handleFilterAutocompleteEnterKeyup() {
+  console.log("handleFilterAutocompleteEnterKeyup");
+}
+function handleFilterSearchTextChange() {
+  console.log("handleFilterSearchTextChange");
 }
 async function handleSubmit() {
   const body = prepareFormData();

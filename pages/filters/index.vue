@@ -1,5 +1,5 @@
 <template>
-  <div>Tags</div>
+  <div>Filter</div>
 </template>
 
 <script setup lang="ts"></script>
