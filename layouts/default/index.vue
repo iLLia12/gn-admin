@@ -18,6 +18,9 @@
 </template>
 
 <script lang="ts" setup>
+import useServerData from "~/stores/serverData";
+const { fetchFilters } = useServerData();
+fetchFilters();
 const sideMenu = [
   {
     name: "Games",

@@ -17,11 +17,15 @@
         <Uploader label="Picture" @change="handleUploaderChange" />
       </div>
       <div class="mb-6">
-        <Autocomplete
-          label="Filters"
-          @keyup:enter="handleFilterAutocompleteEnterKeyup"
-          @update:modelValue="handleFilterSearchTextChange"
-        />
+        <fieldset>
+          <legend @click="handleTest">Filters:</legend>
+          <Checkbox
+            :key="filter.name"
+            :label="filter.name"
+            v-model="filterIds[filter.id]"
+            v-for="filter in filters"
+          />
+        </fieldset>
       </div>
       <div class="mb-6">
         <Autocomplete
@@ -51,30 +55,44 @@ import TextArea from "@/components/controls/textarea";
 import Button from "@/components/controls/button";
 import Uploader from "@/components/controls/uploader";
 import Badge from "@/components/controls/badge";
+import Checkbox from "@/components/controls/checkbox";
+import useServerDataStore from "~/stores/serverData";
+const { filters } = useServerDataStore();
 
 const { toKebabCase } = useHelpers();
-const { data: filters } = await useFetch("/api/filters");
-
-console.log("filters: ", filters.value);
-
 const name = ref("");
 const year = ref("");
 const description = ref("");
 const files = ref<File[]>([]);
-const tags = ref<unknown[]>([]);
+const filterIds = ref<Record<string, boolean>>({});
 
 const slug = computed(() => toKebabCase(name.value));
 
 function prepareFormData() {
   const formData = new FormData();
-  files.value.forEach(async (file) => {
-    formData.append("images", file);
+  const _filterIds = [];
+  for (const key in filterIds.value) {
+    if (filterIds.value[key]) {
+      _filterIds.push(key);
+    }
+  }
+  const fileNames: string[] = [];
+  files.value.forEach(async (file, index) => {
+    const fileName = `image-${index}`;
+    formData.append(fileName, file);
+    fileNames.push(fileName);
   });
+  // laravel media library requires file names as ["name-1", ...], addMultipleMediaFromRequest
+  formData.append("fileNames", fileNames.join("."));
+  formData.append("filters", _filterIds.join("."));
   formData.append("name", name.value);
   formData.append("slug", slug.value);
   formData.append("year", year.value);
   formData.append("description", description.value);
   return formData;
+}
+function handleTest() {
+  console.log(filterIds.value);
 }
 function handleUploaderChange(f: File[]) {
   files.value = f;
@@ -96,13 +114,12 @@ function handleFilterSearchTextChange() {
 }
 async function handleSubmit() {
   const body = prepareFormData();
-  const res = await $fetch("http://localhost/api/games", {
+  await $fetch("http://localhost/api/games", {
     headers: {
       Accept: "application/json",
     },
     method: "post",
     body,
   });
-  console.log(res);
 }
 </script>
