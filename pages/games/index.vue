@@ -130,6 +130,7 @@ const thead = [
 const games = computed(() => {
   return data.value?.body.data || [];
 });
+console.log("games: ", games.value);
 
 function handleCreateGame() {
   router.push({ name: "games-create" });

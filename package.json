@@ -12,7 +12,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@floating-ui/vue": "^1.0.6",
     "@pinia/nuxt": "^0.5.1",
+    "lodash.debounce": "^4.0.8",
     "nuxt": "^3.10.3",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
@@ -21,6 +23,7 @@
   "devDependencies": {
     "@nuxt/eslint": "^0.3.0-beta.5",
     "@nuxtjs/tailwindcss": "^6.11.4",
+    "@types/lodash.debounce": "^4.0.9",
     "autoprefixer": "^10.4.18",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

@@ -19,8 +19,7 @@
 
 <script lang="ts" setup>
 import useServerData from "~/stores/serverData";
-const { fetchFilters } = useServerData();
-fetchFilters();
+const { fetchFilters, fetchTags } = useServerData();
 const sideMenu = [
   {
     name: "Games",
@@ -35,4 +34,7 @@ const sideMenu = [
     routeName: "filters",
   },
 ];
+
+fetchFilters();
+fetchTags();
 </script>

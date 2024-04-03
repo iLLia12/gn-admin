@@ -5,6 +5,7 @@
     >{{ label }}</label
   >
   <input
+    ref="reference"
     id="name"
     :type="type"
     :multiple="multiple"
@@ -16,15 +17,38 @@
     @input="handleInputUpdate"
     @keyup="handleKeyUp"
   />
+  <Teleport to="#teleports">
+    <div
+      v-if="items.length"
+      ref="floating"
+      :style="floatingStyles"
+      class="border w-2/5 border-gray-100 bg-neutral-100 p-4"
+    >
+      <ul>
+        <li :key="item.name" v-for="item in items">{{ item.name }}</li>
+      </ul>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
+import { useFloating } from "@floating-ui/vue";
+import type { PropType } from "vue";
 const emit = defineEmits(["update:modelValue", "keyup:enter"]);
+
+type Item = {
+  id: number;
+  name: string;
+};
 
 const props = defineProps({
   modelValue: {
     label: String,
     type: String,
+  },
+  items: {
+    type: Array as PropType<Item[]>,
+    default: () => [],
   },
   disabled: {
     type: Boolean,
@@ -46,6 +70,12 @@ const props = defineProps({
     type: String,
     default: "",
   },
+});
+
+const reference = ref(null);
+const floating = ref(null);
+const { floatingStyles } = useFloating(reference, floating, {
+  placement: "bottom",
 });
 
 function handleInputUpdate(e: Event) {

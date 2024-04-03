@@ -30,14 +30,19 @@
       <div class="mb-6">
         <Autocomplete
           label="Tags"
-          @keyup:enter="handleTagAutocompleteEnterKeyup"
+          :items="tagSearchResult"
+          v-model="tagSearchText"
           @update:modelValue="handleTagSearchTextChange"
+          @keyup:enter="handleTagSearchEnter"
         />
       </div>
       <div class="mb-6">
-        <Badge :title="`new tag`" @delete="handleDeleteTag" />
-        <Badge :title="`new tag`" @delete="handleDeleteTag" />
-        <Badge :title="`new tag`" @delete="handleDeleteTag" />
+        <Badge
+          :key="tag.id"
+          v-for="tag in tags"
+          :title="tag.name"
+          @delete="handleDeleteTag"
+        />
       </div>
       <div>
         <Button @click="handleSubmit" />
@@ -57,16 +62,26 @@ import Uploader from "@/components/controls/uploader";
 import Badge from "@/components/controls/badge";
 import Checkbox from "@/components/controls/checkbox";
 import useServerDataStore from "~/stores/serverData";
-const { filters } = useServerDataStore();
+import type { Tag } from "~/types";
+import debounce from "lodash.debounce";
 
+const { filters, tags } = useServerDataStore();
 const { toKebabCase } = useHelpers();
+
 const name = ref("");
 const year = ref("");
 const description = ref("");
 const files = ref<File[]>([]);
 const filterIds = ref<Record<string, boolean>>({});
+const tagSearchText = ref("");
 
 const slug = computed(() => toKebabCase(name.value));
+const tagSearchResult = computed(() => {
+  if (tagSearchText.value.length < 2) return [];
+  return tags.filter((tag: Tag) => {
+    return tag.name.toLowerCase().includes(tagSearchText.value);
+  });
+});
 
 function prepareFormData() {
   const formData = new FormData();
@@ -97,14 +112,16 @@ function handleTest() {
 function handleUploaderChange(f: File[]) {
   files.value = f;
 }
-function handleTagSearchTextChange() {
-  console.log("handleTagSearchTextChange");
-}
+
+const handleTagSearchTextChange = debounce(async (e) => {
+  console.log("handleTagSearchTextChange: ", e);
+}, 300);
 function handleDeleteTag() {
   console.log("handleDeleteTag");
 }
-function handleTagAutocompleteEnterKeyup() {
-  console.log("handleTagAutocompleteEnterKeyup");
+function handleTagSearchEnter() {
+  console.log("handleTagSearchEnter");
+  tagSearchText.value = "";
 }
 function handleFilterAutocompleteEnterKeyup() {
   console.log("handleFilterAutocompleteEnterKeyup");

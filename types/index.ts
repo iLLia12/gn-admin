@@ -4,3 +4,9 @@ export type Filter = {
   slug: string;
   category: string;
 };
+
+export type Tag = {
+  id: number;
+  name: string;
+  slug: string;
+};
